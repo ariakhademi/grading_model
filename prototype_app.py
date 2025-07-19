@@ -1,99 +1,97 @@
 import streamlit as st
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import MinMaxScaler
-from scipy.spatial.distance import euclidean, cityblock
-from difflib import SequenceMatcher
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
+from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances, manhattan_distances
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import re
 
-# Load and cache models
-@st.cache_resource
-def load_model(name):
-    return SentenceTransformer(name)
+# -------------------------------
+# Function: Count sentences
+# -------------------------------
+def count_sentences(text):
+    sentences = re.split(r'[.!?]', text)
+    return len([s for s in sentences if s.strip()])
 
-# Similarity functions
-def cosine_sim(v1, v2): return cosine_similarity([v1], [v2])[0][0]
-def euclidean_sim(v1, v2): return 1 / (1 + euclidean(v1, v2))
-def manhattan_sim(v1, v2): return 1 / (1 + cityblock(v1, v2))
-def jaccard_sim(a, b):
-    s1, s2 = set(a.lower().split()), set(b.lower().split())
-    return len(s1 & s2) / len(s1 | s2) if s1 | s2 else 0
-def levenshtein_sim(a, b): return SequenceMatcher(None, a, b).ratio()
+# -------------------------------
+# Function: Compute similarity
+# -------------------------------
+def compute_similarity(vec1, vec2, method="Cosine"):
+    if method == "Cosine":
+        return cosine_similarity([vec1], [vec2])[0][0]
+    elif method == "Euclidean":
+        return -euclidean_distances([vec1], [vec2])[0][0]  # Negated for scoring
+    elif method == "Manhattan":
+        return -manhattan_distances([vec1], [vec2])[0][0]
+    else:
+        raise ValueError("Unknown similarity method.")
 
-# Title
-st.title("Short Answer Grading with Multi-Metric and Visualization")
+# -------------------------------
+# Function: Calculate score
+# -------------------------------
+def calculate_score(similarity, method="Cosine"):
+    if method == "Cosine":
+        return round(similarity * 5)
+    else:
+        scaled = max(min((similarity + 10) / 10, 1.0), 0.0)
+        return round(scaled * 5)
 
-# Inputs
-ideal = st.text_area("Ideal Answer:", height=100)
-user = st.text_area("User Answer:", height=100)
+# -------------------------------
+# Function: Keyword feedback
+# -------------------------------
+def get_missing_keywords(ideal, candidate):
+    ideal_keywords = set(re.findall(r'\b\w+\b', ideal.lower()))
+    candidate_words = set(re.findall(r'\b\w+\b', candidate.lower()))
+    missing = ideal_keywords - candidate_words
+    return sorted(missing)
 
-# Model selector
-model_name = st.selectbox("Embedding Model", [
+# -------------------------------
+# Streamlit UI
+# -------------------------------
+st.set_page_config(page_title="Automated Grading Prototype", layout="centered")
+
+st.title("🧠 Automated Grading Prototype")
+st.markdown("Grade short (1–3 sentence) free-text medical responses using embeddings.")
+
+# Embedding model selection
+model_name = st.selectbox("🔍 Select embedding model:", [
     "all-MiniLM-L6-v2",
-    "all-mpnet-base-v2",
-    "paraphrase-MiniLM-L6-v2",
+    "all-MiniLM-L12-v2",
+    "paraphrase-MiniLM-L6-v2"
 ])
+model = SentenceTransformer(model_name)
 
-# Similarity options
-metrics_selected = st.multiselect(
-    "Choose similarity metrics (select 1 or more):",
-    ["Cosine", "Euclidean", "Manhattan", "Jaccard", "Levenshtein"],
-    default=["Cosine"]
-)
+# Similarity metric selection
+similarity_method = st.selectbox("📏 Similarity method:", ["Cosine", "Euclidean", "Manhattan"])
+
+# Input fields
+question = st.text_input("❓ Question:", "")
+ideal = st.text_area("✅ Ideal Answer (1–3 sentences):", height=80)
+candidate = st.text_area("👤 Candidate Response (1–3 sentences):", height=80)
+
+# Sentence count check
+if ideal and count_sentences(ideal) > 3:
+    st.error("❌ Ideal answer exceeds 3 sentences.")
+if candidate and count_sentences(candidate) > 3:
+    st.error("❌ Candidate response exceeds 3 sentences.")
 
 # Grade button
-if st.button("Grade Answer"):
-    if not ideal.strip() or not user.strip():
-        st.warning("Both fields are required.")
-    else:
-        model = load_model(model_name)
-        vec1, vec2 = model.encode([ideal, user])
+if st.button("📊 Grade Answer") and ideal and candidate:
+    if count_sentences(ideal) > 3 or count_sentences(candidate) > 3:
+        st.stop()
 
-        scores = {}
-        for metric in metrics_selected:
-            if metric == "Cosine":
-                scores["Cosine"] = cosine_sim(vec1, vec2)
-            elif metric == "Euclidean":
-                scores["Euclidean"] = euclidean_sim(vec1, vec2)
-            elif metric == "Manhattan":
-                scores["Manhattan"] = manhattan_sim(vec1, vec2)
-            elif metric == "Jaccard":
-                scores["Jaccard"] = jaccard_sim(ideal, user)
-            elif metric == "Levenshtein":
-                scores["Levenshtein"] = levenshtein_sim(ideal, user)
+    # Compute embeddings and similarity
+    ideal_vec = model.encode(ideal)
+    candidate_vec = model.encode(candidate)
+    similarity = compute_similarity(ideal_vec, candidate_vec, method=similarity_method)
+    score = calculate_score(similarity, method=similarity_method)
 
-        # Scale each to 0–5 and average
-        scaled_scores = {k: round(v * 5, 2) for k, v in scores.items()}
-        avg_score = round(np.mean(list(scaled_scores.values())), 2)
+    # Feedback
+    missing_keywords = get_missing_keywords(ideal, candidate)
+    feedback = f"Score: {score}/5"
+    if missing_keywords:
+        feedback += f". Missing keywords: {', '.join(missing_keywords)}."
 
-        # Display scores
-        st.subheader("Similarity Scores")
-        for k, v in scaled_scores.items():
-            st.write(f"**{k} Similarity**: {v} / 5.00")
-
-        st.markdown(f"### 🧮 **Final Averaged Score**: {avg_score} / 5.00")
-
-        # Feedback
-        if avg_score > 4.0:
-            st.success("Excellent match.")
-        elif avg_score > 3.0:
-            st.info("Good, but some differences.")
-        elif avg_score > 2.0:
-            st.warning("Partially correct.")
-        else:
-            st.error("Poor match. Needs review.")
-
-        # --- Embedding Visualization ---
-        st.subheader("📊 Embedding Visualization (2D)")
-        reducer = PCA(n_components=2)
-        reduced = reducer.fit_transform([vec1, vec2])
-        labels = ['Ideal Answer', 'User Answer']
-
-        fig, ax = plt.subplots()
-        ax.scatter(reduced[:, 0], reduced[:, 1], color=["green", "blue"])
-        for i, txt in enumerate(labels):
-            ax.annotate(txt, (reduced[i, 0]+0.01, reduced[i, 1]+0.01))
-        ax.set_title("2D PCA of Sentence Embeddings")
-        st.pyplot(fig)
+    st.markdown("---")
+    st.markdown(f"**Model Score:** {score}/5")
+    st.markdown(f"**Feedback:** {feedback}")
