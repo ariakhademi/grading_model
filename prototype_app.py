@@ -60,6 +60,7 @@ model_name = st.selectbox("Select embedding model:", [
     "pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb",
     "pritamdeka/S-PubMedBERT-MS-MARCO"
 ])
+
 model = SentenceTransformer(model_name)
 
 # Similarity metric selection

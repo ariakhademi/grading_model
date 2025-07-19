@@ -1,4 +1,7 @@
-# grading_model
+Grading model for the American Board of Anesthesiology
+
+Scenario: You are working for a medical certification board exploring the use of short-answer questions for continuing certification exams. You are asked to build a prototype grading model that can automatically score short, free-text responses (1-3 sentences) given a reference “ideal” answer.
+Objective: Please share and explain your approach to reach the goal.
 
 Example ideal and candidate answers:
 Testing Automated Grading Prototype
