@@ -7,10 +7,130 @@ Example ideal and candidate answers:
 
 Testing Automated Grading Prototype  
 
-Question: What is the first-line treatment for acute ischemic stroke within 4.5 hours? Ideal Answer: Intravenous alteplase is the first-line treatment for acute ischemic stroke within 4.5 hours, provided no contraindications exist. Candidate Response: IV tissue plasminogen activator within 4.5 hours if eligible. Expert Score: 4 Model Score: 4 Feedback: Score: 4/5. Missing keywords: contraindications.
+# Sample Medical Short-Answer Items
 
-Question: What is the first-line treatment for acute ischemic stroke within 4.5 hours? Ideal Answer: Intravenous alteplase is the first-line treatment for acute ischemic stroke within 4.5 hours, provided no contraindications exist. Candidate Response: Aspirin is the best treatment for stroke. Expert Score: 2 Model Score: 2 Feedback: Score: 2/5. Missing keywords: alteplase, hours, contraindications. 
+This dataset includes **10 sample questions**, each with an ideal and candidate response (1–3 sentences), designed for evaluating automated grading systems in the medical domain.
 
-Question: What is the primary cause of type 2 diabetes? Ideal Answer: Type 2 diabetes is primarily caused by insulin resistance and relative insulin deficiency. Candidate Response: Insulin resistance causes type 2 diabetes. Expert Score: 3 Model Score: 3 Feedback: Score: 3/5. Missing keywords: deficiency. 
+---
 
-Question: What is the recommended initial test for suspected pulmonary embolism? Ideal Answer: A CT pulmonary angiography is the recommended initial test for suspected pulmonary embolism. Candidate Response: D-dimer test is the first step for pulmonary embolism. Expert Score: 3 Model Score: 2 Feedback: Score: 2/5. Missing keywords: angiography, ct. 
+### Question 1
+**Q:** What are the warning signs of a stroke?
+
+- **Ideal Answer (2 sentences):**  
+  Sudden numbness or weakness in the face, arm, or leg, especially on one side of the body, is a key warning sign.  
+  Other signs include confusion, trouble speaking, and difficulty seeing or walking.
+
+- **Candidate Response:**  
+  A person might suddenly have weakness on one side or be unable to speak clearly.
+
+---
+
+### Question 2
+**Q:** How does metformin help manage Type 2 diabetes?
+
+- **Ideal Answer (1 sentence):**  
+  Metformin lowers blood glucose by decreasing hepatic glucose production and improving insulin sensitivity.
+
+- **Candidate Response:**  
+  It helps the body respond better to insulin and reduces sugar made by the liver.
+
+---
+
+### Question 3
+**Q:** What steps should be taken when a patient has an anaphylactic reaction?
+
+- **Ideal Answer (3 sentences):**  
+  Immediately administer intramuscular epinephrine.  
+  Call emergency services and place the patient in a supine position unless breathing is impaired.  
+  Administer oxygen and prepare for airway management if necessary.
+
+- **Candidate Response:**  
+  You give epinephrine and call for help. They may need oxygen and their airway might need to be managed.
+
+---
+
+### Question 4
+**Q:** What are some long-term complications of poorly controlled hypertension?
+
+- **Ideal Answer (2 sentences):**  
+  Poorly controlled hypertension can lead to heart failure, chronic kidney disease, and stroke.  
+  It also increases the risk of vision loss and vascular dementia.
+
+- **Candidate Response:**  
+  High blood pressure can cause heart and kidney problems.  
+  It might also affect the brain or eyes.
+
+---
+
+### Question 5
+**Q:** What are the primary symptoms of hypothyroidism?
+
+- **Ideal Answer (1 sentence):**  
+  Fatigue, weight gain, cold intolerance, and constipation are common symptoms of hypothyroidism.
+
+- **Candidate Response:**  
+  People often feel tired and gain weight easily.
+
+---
+
+### Question 6
+**Q:** How does smoking increase the risk of cardiovascular disease?
+
+- **Ideal Answer (3 sentences):**  
+  Smoking damages the endothelium and promotes atherosclerosis.  
+  It increases heart rate, blood pressure, and platelet aggregation.  
+  These changes raise the risk of heart attack and stroke significantly.
+
+- **Candidate Response:**  
+  Smoking can clog arteries and raise blood pressure.  
+  It causes heart disease and strokes.
+
+---
+
+### Question 7
+**Q:** What is the recommended first step in managing newly diagnosed mild depression?
+
+- **Ideal Answer (2 sentences):**  
+  Start with supportive psychotherapy and monitor symptoms.  
+  Lifestyle interventions such as physical activity and sleep hygiene are also beneficial.
+
+- **Candidate Response:**  
+  You should start with talking therapy and improve sleep and exercise habits.
+
+---
+
+### Question 8
+**Q:** How can you differentiate between viral and bacterial sinusitis?
+
+- **Ideal Answer (3 sentences):**  
+  Viral sinusitis usually resolves within 7–10 days and presents with milder symptoms.  
+  Bacterial sinusitis often lasts longer, with symptoms like facial pain, purulent nasal discharge, and fever.  
+  Worsening symptoms after initial improvement (double worsening) is another clue.
+
+- **Candidate Response:**  
+  Bacterial sinusitis lasts longer and may get worse after getting better.  
+  You can also have a fever and thick mucus.
+
+---
+
+### Question 9
+**Q:** What are key lifestyle changes recommended for patients with GERD?
+
+- **Ideal Answer (2 sentences):**  
+  Patients should avoid trigger foods, eat smaller meals, and avoid lying down after eating.  
+  Weight loss and elevating the head of the bed can also reduce symptoms.
+
+- **Candidate Response:**  
+  Smaller meals and no lying down after eating help.  
+  Losing weight and avoiding spicy foods also work.
+
+---
+
+### Question 10
+**Q:** How is deep vein thrombosis (DVT) diagnosed?
+
+- **Ideal Answer (1 sentence):**  
+  DVT is commonly diagnosed using compression ultrasound and D-dimer testing.
+
+- **Candidate Response:**  
+  They use an ultrasound and sometimes check blood with a D-dimer test.
