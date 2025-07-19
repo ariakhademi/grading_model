@@ -56,7 +56,9 @@ st.markdown("Grade short (1–3 sentence) free-text medical responses using embe
 model_name = st.selectbox("Select embedding model:", [
     "all-MiniLM-L6-v2",
     "all-MiniLM-L12-v2",
-    "paraphrase-MiniLM-L6-v2"
+    "paraphrase-MiniLM-L6-v2",
+    "pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb",
+    "pritamdeka/S-PubMedBERT-MS-MARCO"
 ])
 model = SentenceTransformer(model_name)
 
