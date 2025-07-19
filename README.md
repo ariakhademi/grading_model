@@ -1,11 +1,10 @@
-Grading model for the American Board of Anesthesiology
+# Grading model for the American Board of Anesthesiology
 
 Scenario: You are working for a medical certification board exploring the use of short-answer questions for continuing certification exams. You are asked to build a prototype grading model that can automatically score short, free-text responses (1-3 sentences) given a reference “ideal” answer.
 Objective: Please share and explain your approach to reach the goal.
 
-Example ideal and candidate answers:
-
-Testing Automated Grading Prototype  
+# Approach
+In our approach, we use sentence embeddings to convert both the ideal answer and the candidate's response into fixed-length numerical vectors using a pre-trained transformer model. These embeddings capture the semantic meaning of the sentences beyond just surface-level word matching. Once we have these vector representations, we compute similarity scores between them using metrics such as cosine similarity, Euclidean distance, or Manhattan distance. Cosine similarity measures the angle between the two vectors, highlighting directional similarity, while the distance-based metrics quantify how far apart the vectors are in space. These similarity scores are then scaled and converted into a 0–5 grading score, offering an interpretable and automated way to evaluate the semantic closeness between a candidate's response and the expected answer.
 
 # Sample Medical Short-Answer Items
 
