@@ -22,7 +22,7 @@ def compute_similarity(vec1, vec2, method="Cosine"):
     elif method == "Euclidean":
         return -euclidean_distances([vec1], [vec2])[0][0]  # Negated for scoring
     elif method == "Manhattan":
-        return -manhattan_distances([vec1], [vec2])[0][0]
+        return -manhattan_distances([vec1], [vec2])[0][0]  # Negated for scoring
     else:
         raise ValueError("Unknown similarity method.")
 
@@ -49,12 +49,11 @@ def get_missing_keywords(ideal, candidate):
 # Streamlit UI
 # -------------------------------
 st.set_page_config(page_title="Automated Grading Prototype", layout="centered")
-
-st.title("🧠 Automated Grading Prototype")
+st.title("Automated Grading Prototype")
 st.markdown("Grade short (1–3 sentence) free-text medical responses using embeddings.")
 
 # Embedding model selection
-model_name = st.selectbox("🔍 Select embedding model:", [
+model_name = st.selectbox("Select embedding model:", [
     "all-MiniLM-L6-v2",
     "all-MiniLM-L12-v2",
     "paraphrase-MiniLM-L6-v2"
@@ -62,21 +61,21 @@ model_name = st.selectbox("🔍 Select embedding model:", [
 model = SentenceTransformer(model_name)
 
 # Similarity metric selection
-similarity_method = st.selectbox("📏 Similarity method:", ["Cosine", "Euclidean", "Manhattan"])
+similarity_method = st.selectbox("Similarity method:", ["Cosine", "Euclidean", "Manhattan"])
 
 # Input fields
-question = st.text_input("❓ Question:", "")
-ideal = st.text_area("✅ Ideal Answer (1–3 sentences):", height=80)
-candidate = st.text_area("👤 Candidate Response (1–3 sentences):", height=80)
+question = st.text_input("Question:", "")
+ideal = st.text_area("Ideal Answer (1–3 sentences):", height=80)
+candidate = st.text_area("Candidate Response (1–3 sentences):", height=80)
 
 # Sentence count check
 if ideal and count_sentences(ideal) > 3:
-    st.error("❌ Ideal answer exceeds 3 sentences.")
+    st.error("Ideal answer exceeds 3 sentences.")
 if candidate and count_sentences(candidate) > 3:
-    st.error("❌ Candidate response exceeds 3 sentences.")
+    st.error("Candidate response exceeds 3 sentences.")
 
 # Grade button
-if st.button("📊 Grade Answer") and ideal and candidate:
+if st.button("Grade Answer") and ideal and candidate:
     if count_sentences(ideal) > 3 or count_sentences(candidate) > 3:
         st.stop()
 
