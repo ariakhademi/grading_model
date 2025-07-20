@@ -20,7 +20,7 @@ grading_model/
 ├── sample_QA.txt # Sample question-answer pairs for testing
 
 ## List of demo functions
-fucntions go here.
+fucntions and capabilites of a prototype go here.
 
 ## Limitations and future work
 Not clinically fine-tuned.

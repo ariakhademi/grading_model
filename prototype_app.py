@@ -2,31 +2,25 @@ import streamlit as st
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances, manhattan_distances
 import re
-import numpy as np
 
-# -------------------------------
-# Sentence & word count checkers
-# -------------------------------
+# 1-3 sentence constraint
 def count_sentences(text):
     sentences = re.split(r'[.!?]', text)
     return len([s for s in sentences if s.strip()])
 
+# counts whole words in a sentence
 def count_words(text):
     return len(re.findall(r'\b\w+\b', text))
 
-# -------------------------------
-# Cached model loader
-# -------------------------------
+# cached model loader
 @st.cache_resource
 def load_model(model_name):
     return SentenceTransformer(model_name)
 
-# -------------------------------
-# Similarity computation
-# -------------------------------
+# similarity measures
 def compute_similarity(vec1, vec2, method="Cosine"):
     if method == "Cosine":
-        raw = cosine_similarity([vec1], [vec2])[0][0]
+        raw = cosine_similarity([vec1], [vec2])[0][0] # extracts raw number
         raw_min, raw_max = -1.0, 1.0
     elif method == "Euclidean":
         raw = euclidean_distances([vec1], [vec2])[0][0]
@@ -37,7 +31,7 @@ def compute_similarity(vec1, vec2, method="Cosine"):
     else:
         raise ValueError("Unknown similarity method.")
 
-    # Normalize to [0, 1] (higher = better)
+    # normalize to [0, 1] 
     if method == "Cosine":
         norm_score = (raw - raw_min) / (raw_max - raw_min)
     else:
@@ -46,23 +40,19 @@ def compute_similarity(vec1, vec2, method="Cosine"):
 
     return norm_score, raw
 
-# -------------------------------
-# Keyword scoring penalty
-# -------------------------------
+# penalty for missing words
 def get_missing_keywords(ideal, candidate):
     ideal_keywords = set(re.findall(r'\b\w+\b', ideal.lower()))
     candidate_words = set(re.findall(r'\b\w+\b', candidate.lower()))
     missing = ideal_keywords - candidate_words
     return sorted(missing), len(missing), len(ideal_keywords)
 
-# -------------------------------
-# Final score scaling
-# -------------------------------
+# final score after penalty
 def calculate_score(similarity_score, num_missing_keywords, total_keywords):
     keyword_penalty = (num_missing_keywords / max(total_keywords, 1)) * 0.4  # Max 40% penalty
     penalized_score = max(similarity_score - keyword_penalty, 0.0)
 
-    # Add interpretation
+    # add interpretation based on thresholds
     if penalized_score >= 0.8:
         label = "Excellent answer, good job."
     elif penalized_score >= 0.5:
@@ -72,9 +62,7 @@ def calculate_score(similarity_score, num_missing_keywords, total_keywords):
 
     return penalized_score, label
 
-# -------------------------------
-# Example bank
-# -------------------------------
+# bank of questions, ideal answers, and candidate answers
 examples = {
     "": {"question": "", "ideal": "", "candidate": ""},
     "Hypertension Diagnosis": {
@@ -114,18 +102,16 @@ examples = {
     }
 }
 
-# -------------------------------
-# Streamlit UI
-# -------------------------------
+# user interface with streamlit
 st.set_page_config(page_title="Automated Grading Prototype", layout="centered")
 st.title("Automated Grading Prototype")
 st.markdown("Grade short (1–3 sentence) medical responses using embeddings and similarity scoring.")
 
-# Example selector
+# select an example
 example_choice = st.selectbox("Try an example:", list(examples.keys()))
 example = examples[example_choice]
 
-# Model selection
+# select a semantic embedding model
 model_name = st.selectbox("Select embedding model:", [
     "all-MiniLM-L6-v2",
     "all-MiniLM-L12-v2",
@@ -133,17 +119,19 @@ model_name = st.selectbox("Select embedding model:", [
     "pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb",
     "pritamdeka/S-PubMedBERT-MS-MARCO"
 ])
+
+# load the model
 model = load_model(model_name)
 
-# Similarity metric
+# choose a similarity metric
 similarity_method = st.selectbox("Similarity method:", ["Cosine", "Euclidean", "Manhattan"])
 
-# Input fields
+# input fields
 question = st.text_input("Question:", example["question"])
 ideal = st.text_area("Ideal Answer (1–3 sentences):", value=example["ideal"], height=80)
 candidate = st.text_area("Candidate Response (1–3 sentences):", value=example["candidate"], height=80)
 
-# Input checks
+# input checks for constraints
 if ideal and count_sentences(ideal) > 3:
     st.warning("Ideal answer exceeds 3 sentences.")
 if candidate and count_sentences(candidate) > 3:
@@ -151,25 +139,25 @@ if candidate and count_sentences(candidate) > 3:
 if candidate and count_words(candidate) < 3:
     st.warning("Candidate answer is too short (<3 words).")
 
-# Grade
+# grade answers
 if st.button("Grade Answer") and ideal and candidate:
     if count_sentences(ideal) > 3 or count_sentences(candidate) > 3:
         st.stop()
 
-    # Embeddings
+    # obtain embeddings of answers
     ideal_vec = model.encode(ideal)
     candidate_vec = model.encode(candidate)
 
-    # Similarity
+    # check similarity of embeddings
     normalized_score, raw_score = compute_similarity(ideal_vec, candidate_vec, method=similarity_method)
 
-    # Keyword comparison
+    # keyword comparison
     missing_keywords, num_missing, total_keywords = get_missing_keywords(ideal, candidate)
 
-    # Final score
+    # final score
     final_normalized_score, interpretation = calculate_score(normalized_score, num_missing, total_keywords)
 
-    # Feedback
+    # feedback
     st.markdown("---")
     st.markdown(f"**Similarity Method:** {similarity_method}")
     st.markdown(f"**Raw Similarity Score:** {round(raw_score, 4)}")
