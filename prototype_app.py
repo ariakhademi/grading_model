@@ -64,11 +64,11 @@ def calculate_score(similarity_score, num_missing_keywords, total_keywords):
 
     # Add interpretation
     if penalized_score >= 0.8:
-        label = "Excellent"
+        label = "Excellent answer, good job."
     elif penalized_score >= 0.5:
-        label = "Fair"
+        label = "Fair answer, doing good."
     else:
-        label = "Needs Improvement"
+        label = "Needs improvement, alert the board of trustees."
 
     return penalized_score, label
 
@@ -86,6 +86,31 @@ examples = {
         "question": "How is type 2 diabetes managed?",
         "ideal": "Management includes lifestyle changes like diet and exercise, along with medications such as metformin.",
         "candidate": "Patients take metformin and try to eat better and exercise."
+    },
+    "Red Blood Cells": {
+        "question": "What is the main function of red blood cells?",
+        "ideal": "Red blood cells carry oxygen from the lungs to tissues throughout the body. They use hemoglobin to bind oxygen.",
+        "candidate": "They transport oxygen using hemoglobin."
+    },
+    "Insulin Functionality": {
+        "question": "How does insulin regulate blood sugar?",
+        "ideal": "Insulin lowers blood glucose by helping cells absorb sugar from the bloodstream. It stimulates the liver to store glucose as glycogen. This keeps blood sugar levels within a healthy range.",
+        "candidate": "Insulin helps cells absorb glucose. It also stores sugar in the liver."
+    },
+    "Allergic Reaction": {
+        "question": "What happens during an allergic reaction?",
+        "ideal": "The immune system identifies a harmless substance as a threat. It releases histamine and other chemicals. This causes symptoms like swelling, itching, and sneezing.",
+        "candidate": "Histamines are released. You get symptoms like hives or sneezing."
+    },
+    "Vaccination": {
+        "question": "What is the purpose of a vaccine?",
+        "ideal": "Vaccines help the immune system recognize and fight specific pathogens.",
+        "candidate": "Vaccines train the body to fight infections. They don’t actually cause the disease."
+    },
+    "Antibiotics Functionality": {
+        "question": "How do antibiotics work?",
+        "ideal": "Antibiotics target bacteria and either kill them or prevent them from multiplying. They interfere with bacterial cell walls or proteins. They are not effective against viruses.",
+        "candidate": "They kill bacteria but don’t work on viruses."
     }
 }
 
