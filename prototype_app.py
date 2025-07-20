@@ -49,7 +49,7 @@ def get_missing_keywords(ideal, candidate):
 
 # final score after penalty
 def calculate_score(similarity_score, num_missing_keywords, total_keywords):
-    keyword_penalty = (num_missing_keywords / max(total_keywords, 1)) * 0.4  # Max 40% penalty
+    keyword_penalty = (num_missing_keywords / max(total_keywords, 1)) * 0.4  # 40% penalty
     penalized_score = max(similarity_score - keyword_penalty, 0.0)
 
     # add interpretation based on thresholds
@@ -136,8 +136,6 @@ if ideal and count_sentences(ideal) > 3:
     st.warning("Ideal answer exceeds 3 sentences.")
 if candidate and count_sentences(candidate) > 3:
     st.warning("Candidate response exceeds 3 sentences.")
-if candidate and count_words(candidate) < 3:
-    st.warning("Candidate answer is too short (<3 words).")
 
 # grade answers
 if st.button("Grade Answer") and ideal and candidate:
@@ -160,7 +158,8 @@ if st.button("Grade Answer") and ideal and candidate:
     # feedback
     st.markdown("---")
     st.markdown(f"**Similarity Method:** {similarity_method}")
-    st.markdown(f"**Raw Similarity Score:** {round(raw_score, 4)}")
+    st.markdown(f'**Transformer Embedding Method:** {model_name}')
+    # st.markdown(f"**Raw Similarity Score:** {round(raw_score, 4)}")
     st.markdown(f"**Normalized Score (pre-penalty):** {round(normalized_score, 4)}")
     st.markdown(f"**Missing Keywords ({num_missing}/{total_keywords}):** {', '.join(missing_keywords) if missing_keywords else 'None'}")
     st.markdown(f"**Final Normalized Score (after penalty):** {round(final_normalized_score, 4)}")
