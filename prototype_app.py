@@ -60,8 +60,17 @@ def get_missing_keywords(ideal, candidate):
 # -------------------------------
 def calculate_score(similarity_score, num_missing_keywords, total_keywords):
     keyword_penalty = (num_missing_keywords / max(total_keywords, 1)) * 0.4  # Max 40% penalty
-    penalized_score = max(similarity_score - keyword_penalty, 0.0)  # Keep in [0,1]
-    return penalized_score  # Already normalized
+    penalized_score = max(similarity_score - keyword_penalty, 0.0)
+
+    # Add interpretation
+    if penalized_score >= 0.8:
+        label = "Excellent"
+    elif penalized_score >= 0.5:
+        label = "Fair"
+    else:
+        label = "Needs Improvement"
+
+    return penalized_score, label
 
 # -------------------------------
 # Example bank
@@ -133,7 +142,7 @@ if st.button("Grade Answer") and ideal and candidate:
     missing_keywords, num_missing, total_keywords = get_missing_keywords(ideal, candidate)
 
     # Final score
-    final_normalized_score = calculate_score(normalized_score, num_missing, total_keywords)
+    final_normalized_score, interpretation = calculate_score(normalized_score, num_missing, total_keywords)
 
     # Feedback
     st.markdown("---")
@@ -142,3 +151,5 @@ if st.button("Grade Answer") and ideal and candidate:
     st.markdown(f"**Normalized Score (pre-penalty):** {round(normalized_score, 4)}")
     st.markdown(f"**Missing Keywords ({num_missing}/{total_keywords}):** {', '.join(missing_keywords) if missing_keywords else 'None'}")
     st.markdown(f"**Final Normalized Score (after penalty):** {round(final_normalized_score, 4)}")
+    st.markdown(f"**Interpretation:** {interpretation}")
+
