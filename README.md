@@ -14,12 +14,12 @@ This project leverages transformer-based sentence embedding models to evaluate t
 
 ## File structure
 <pre><code>
-```text grading_model/ 
+text grading_model/ 
 ├── README.md # Project overview and usage instructions 
 ├── prototype_app.py # Streamlit or CLI app for grading prototype 
 ├── prototype_runner.sh # Shell script to run the prototype 
 ├── sample_QA.txt # Sample question-answer pairs for testing 
-```
+
 </code></pre>
 
 ## List of demo functions
