@@ -13,7 +13,14 @@ In our approach, we use sentence embeddings to convert both the ideal answer and
 This project leverages transformer-based sentence embedding models to evaluate the semantic similarity between a candidate response and an ideal medical answer. It supports general-purpose models such as all-MiniLM-L6-v2, all-MiniLM-L12-v2, and paraphrase-MiniLM-L6-v2, all of which are lightweight yet powerful variants of Sentence-BERT fine-tuned for tasks like paraphrase detection and semantic textual similarity. Additionally, it includes two domain-specific models— BioBERT (pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb) and PubMedBERT (pritamdeka/S-PubMedBERT-MS-MARCO)—which are pre-trained and fine-tuned on biomedical and clinical corpora, making them well-suited for medical language understanding. All models generate fixed-length sentence embeddings using mean pooling, and similarity scores between candidate and reference answers are calculated using cosine similarity, Euclidean distance, or Manhattan distance for robust evaluation.
 
 ## File structure
-<pre><code>```text grading_model/ ├── README.md # Project overview and usage instructions ├── prototype_app.py # Streamlit or CLI app for grading prototype ├── prototype_runner.sh # Shell script to run the prototype ├── sample_QA.txt # Sample question-answer pairs for testing ```</code></pre>
+<pre><code>
+```text grading_model/ 
+├── README.md # Project overview and usage instructions 
+├── prototype_app.py # Streamlit or CLI app for grading prototype 
+├── prototype_runner.sh # Shell script to run the prototype 
+├── sample_QA.txt # Sample question-answer pairs for testing 
+```
+</code></pre>
 
 ## List of demo functions
 fucntions and capabilites of a prototype go here.
