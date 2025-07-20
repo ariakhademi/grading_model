@@ -163,5 +163,18 @@ if st.button("Grade Answer") and ideal and candidate:
     st.markdown(f"**Normalized Score (pre-penalty):** {round(normalized_score, 4)}")
     st.markdown(f"**Missing Keywords ({num_missing}/{total_keywords}):** {', '.join(missing_keywords) if missing_keywords else 'None'}")
     st.markdown(f"**Final Normalized Score (after penalty):** {round(final_normalized_score, 4)}")
-    st.markdown(f"**Interpretation:** {interpretation}")
+    st.subheader("🔍 Final Score")
+    st.progress(final_normalized_score)
+    # optional: Color-coded label for qualitative interpretation
+    if final_normalized_score >= 0.85:
+        label = "✅ Excellent"
+        color = "green"
+    elif final_normalized_score >= 0.5:
+        label = "⚠️ Fair"
+        color = "orange"
+    else:
+        label = "❌ Needs Improvement"
+        color = "red"
+
+    st.markdown(f"**Interpretation (Excellent, fair, bad):** {interpretation}")
 
