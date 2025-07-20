@@ -1,20 +1,19 @@
 import streamlit as st
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances, manhattan_distances
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import re
 
 # -------------------------------
-# Function: Count sentences
+# Sentence count checker
 # -------------------------------
 def count_sentences(text):
     sentences = re.split(r'[.!?]', text)
     return len([s for s in sentences if s.strip()])
 
 # -------------------------------
-# Function: Compute similarity
+# Similarity computation
 # -------------------------------
 def compute_similarity(vec1, vec2, method="Cosine"):
     if method == "Cosine":
@@ -27,7 +26,7 @@ def compute_similarity(vec1, vec2, method="Cosine"):
         raise ValueError("Unknown similarity method.")
 
 # -------------------------------
-# Function: Calculate score
+# Score scaling
 # -------------------------------
 def calculate_score(similarity, method="Cosine"):
     if method == "Cosine":
@@ -37,7 +36,7 @@ def calculate_score(similarity, method="Cosine"):
         return round(scaled * 5)
 
 # -------------------------------
-# Function: Keyword feedback
+# Missing keyword detection
 # -------------------------------
 def get_missing_keywords(ideal, candidate):
     ideal_keywords = set(re.findall(r'\b\w+\b', ideal.lower()))
@@ -46,11 +45,32 @@ def get_missing_keywords(ideal, candidate):
     return sorted(missing)
 
 # -------------------------------
+# Example bank
+# -------------------------------
+examples = {
+    "": {"question": "", "ideal": "", "candidate": ""},
+    "Hypertension Diagnosis": {
+        "question": "What criteria are used to diagnose hypertension?",
+        "ideal": "Hypertension is diagnosed when blood pressure readings are consistently above 130/80 mmHg on at least two separate occasions.",
+        "candidate": "High blood pressure is diagnosed if it stays above 130 over 80 multiple times."
+    },
+    "Diabetes Management": {
+        "question": "How is type 2 diabetes managed?",
+        "ideal": "Management includes lifestyle changes like diet and exercise, along with medications such as metformin.",
+        "candidate": "Patients take metformin and try to eat better and exercise."
+    }
+}
+
+# -------------------------------
 # Streamlit UI
 # -------------------------------
 st.set_page_config(page_title="Automated Grading Prototype", layout="centered")
 st.title("Automated Grading Prototype")
-st.markdown("Grade short (1–3 sentence) free-text medical responses using embeddings.")
+st.markdown("Grade short (1–3 sentence) medical responses using embeddings and similarity scoring.")
+
+# Example selector
+example_choice = st.selectbox("Try an example:", list(examples.keys()))
+example = examples[example_choice]
 
 # Embedding model selection
 model_name = st.selectbox("Select embedding model:", [
@@ -63,26 +83,26 @@ model_name = st.selectbox("Select embedding model:", [
 
 model = SentenceTransformer(model_name)
 
-# Similarity metric selection
+# Similarity method
 similarity_method = st.selectbox("Similarity method:", ["Cosine", "Euclidean", "Manhattan"])
 
 # Input fields
-question = st.text_input("Question:", "")
-ideal = st.text_area("Ideal Answer (1–3 sentences):", height=80)
-candidate = st.text_area("Candidate Response (1–3 sentences):", height=80)
+question = st.text_input("Question:", example["question"])
+ideal = st.text_area("Ideal Answer (1–3 sentences):", value=example["ideal"], height=80)
+candidate = st.text_area("Candidate Response (1–3 sentences):", value=example["candidate"], height=80)
 
-# Sentence count check
+# Sentence constraint warnings
 if ideal and count_sentences(ideal) > 3:
     st.error("Ideal answer exceeds 3 sentences.")
 if candidate and count_sentences(candidate) > 3:
     st.error("Candidate response exceeds 3 sentences.")
 
-# Grade button
+# Grade response
 if st.button("Grade Answer") and ideal and candidate:
     if count_sentences(ideal) > 3 or count_sentences(candidate) > 3:
         st.stop()
 
-    # Compute embeddings and similarity
+    # Embedding + similarity
     ideal_vec = model.encode(ideal)
     candidate_vec = model.encode(candidate)
     similarity = compute_similarity(ideal_vec, candidate_vec, method=similarity_method)
@@ -96,4 +116,5 @@ if st.button("Grade Answer") and ideal and candidate:
 
     st.markdown("---")
     st.markdown(f"**Model Score:** {score}/5")
+    st.markdown(f"**Similarity ({similarity_method}):** {round(similarity, 4)}")
     st.markdown(f"**Feedback:** {feedback}")
