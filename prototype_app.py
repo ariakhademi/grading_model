@@ -1,48 +1,67 @@
 import streamlit as st
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances, manhattan_distances
-import matplotlib.pyplot as plt
-import seaborn as sns
 import re
+import numpy as np
 
 # -------------------------------
-# Sentence count checker
+# Sentence & word count checkers
 # -------------------------------
 def count_sentences(text):
     sentences = re.split(r'[.!?]', text)
     return len([s for s in sentences if s.strip()])
+
+def count_words(text):
+    return len(re.findall(r'\b\w+\b', text))
+
+# -------------------------------
+# Cached model loader
+# -------------------------------
+@st.cache_resource
+def load_model(model_name):
+    return SentenceTransformer(model_name)
 
 # -------------------------------
 # Similarity computation
 # -------------------------------
 def compute_similarity(vec1, vec2, method="Cosine"):
     if method == "Cosine":
-        return cosine_similarity([vec1], [vec2])[0][0]
+        raw = cosine_similarity([vec1], [vec2])[0][0]
+        raw_min, raw_max = -1.0, 1.0
     elif method == "Euclidean":
-        return -euclidean_distances([vec1], [vec2])[0][0]  # Negated for scoring
+        raw = euclidean_distances([vec1], [vec2])[0][0]
+        raw_min, raw_max = 0.0, 2.0  # Approximate max dist in unit-normalized 384D space
     elif method == "Manhattan":
-        return -manhattan_distances([vec1], [vec2])[0][0]  # Negated for scoring
+        raw = manhattan_distances([vec1], [vec2])[0][0]
+        raw_min, raw_max = 0.0, 100.0  # Rough empirical estimate
     else:
         raise ValueError("Unknown similarity method.")
 
-# -------------------------------
-# Score scaling
-# -------------------------------
-def calculate_score(similarity, method="Cosine"):
+    # Normalize to [0, 1] (higher = better)
     if method == "Cosine":
-        return round(similarity * 5)
+        norm_score = (raw - raw_min) / (raw_max - raw_min)
     else:
-        scaled = max(min((similarity + 10) / 10, 1.0), 0.0)
-        return round(scaled * 5)
+        norm_score = 1 - (raw - raw_min) / (raw_max - raw_min)
+        norm_score = max(0.0, min(1.0, norm_score))  # Clamp
+
+    return norm_score, raw
 
 # -------------------------------
-# Missing keyword detection
+# Keyword scoring penalty
 # -------------------------------
 def get_missing_keywords(ideal, candidate):
     ideal_keywords = set(re.findall(r'\b\w+\b', ideal.lower()))
     candidate_words = set(re.findall(r'\b\w+\b', candidate.lower()))
     missing = ideal_keywords - candidate_words
-    return sorted(missing)
+    return sorted(missing), len(missing), len(ideal_keywords)
+
+# -------------------------------
+# Final score scaling
+# -------------------------------
+def calculate_score(similarity_score, num_missing_keywords, total_keywords):
+    keyword_penalty = (num_missing_keywords / max(total_keywords, 1)) * 0.4  # Up to 40% penalty
+    penalized = max(similarity_score - keyword_penalty, 0.0)
+    return round(penalized * 5), penalized  # Scaled score out of 5
 
 # -------------------------------
 # Example bank
@@ -72,7 +91,7 @@ st.markdown("Grade short (1–3 sentence) medical responses using embeddings and
 example_choice = st.selectbox("Try an example:", list(examples.keys()))
 example = examples[example_choice]
 
-# Embedding model selection
+# Model selection
 model_name = st.selectbox("Select embedding model:", [
     "all-MiniLM-L6-v2",
     "all-MiniLM-L12-v2",
@@ -80,10 +99,9 @@ model_name = st.selectbox("Select embedding model:", [
     "pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb",
     "pritamdeka/S-PubMedBERT-MS-MARCO"
 ])
+model = load_model(model_name)
 
-model = SentenceTransformer(model_name)
-
-# Similarity method
+# Similarity metric
 similarity_method = st.selectbox("Similarity method:", ["Cosine", "Euclidean", "Manhattan"])
 
 # Input fields
@@ -91,30 +109,36 @@ question = st.text_input("Question:", example["question"])
 ideal = st.text_area("Ideal Answer (1–3 sentences):", value=example["ideal"], height=80)
 candidate = st.text_area("Candidate Response (1–3 sentences):", value=example["candidate"], height=80)
 
-# Sentence constraint warnings
+# Input checks
 if ideal and count_sentences(ideal) > 3:
-    st.error("Ideal answer exceeds 3 sentences.")
+    st.warning("Ideal answer exceeds 3 sentences.")
 if candidate and count_sentences(candidate) > 3:
-    st.error("Candidate response exceeds 3 sentences.")
+    st.warning("Candidate response exceeds 3 sentences.")
+if candidate and count_words(candidate) < 3:
+    st.warning("Candidate answer is too short (<3 words).")
 
-# Grade response
+# Grade
 if st.button("Grade Answer") and ideal and candidate:
     if count_sentences(ideal) > 3 or count_sentences(candidate) > 3:
         st.stop()
 
-    # Embedding + similarity
+    # Embeddings
     ideal_vec = model.encode(ideal)
     candidate_vec = model.encode(candidate)
-    similarity = compute_similarity(ideal_vec, candidate_vec, method=similarity_method)
-    score = calculate_score(similarity, method=similarity_method)
+
+    # Similarity
+    normalized_score, raw_score = compute_similarity(ideal_vec, candidate_vec, method=similarity_method)
+
+    # Keyword comparison
+    missing_keywords, num_missing, total_keywords = get_missing_keywords(ideal, candidate)
+
+    # Final score
+    scaled_score, penalized_score = calculate_score(normalized_score, num_missing, total_keywords)
 
     # Feedback
-    missing_keywords = get_missing_keywords(ideal, candidate)
-    feedback = f"Score: {score}/5"
-    if missing_keywords:
-        feedback += f". Missing keywords: {', '.join(missing_keywords)}."
-
     st.markdown("---")
-    st.markdown(f"**Model Score:** {score}/5")
-    st.markdown(f"**Similarity ({similarity_method}):** {round(similarity, 4)}")
-    st.markdown(f"**Feedback:** {feedback}")
+    st.markdown(f"**Similarity Method:** {similarity_method}")
+    st.markdown(f"**Raw Similarity Score:** {round(raw_score, 4)}")
+    st.markdown(f"**Normalized Score (pre-penalty):** {round(normalized_score, 4)}")
+    st.markdown(f"**Missing Keywords ({num_missing}/{total_keywords}):** {', '.join(missing_keywords) if missing_keywords else 'None'}")
+    st.markdown(f"**Final Score (with keyword penalty):** {scaled_score}/5")
