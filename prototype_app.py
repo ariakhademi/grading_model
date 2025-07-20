@@ -23,11 +23,11 @@ def compute_similarity(vec1, vec2, method="Cosine"):
         raw = cosine_similarity([vec1], [vec2])[0][0] # extracts raw number
         raw_min, raw_max = -1.0, 1.0
     elif method == "Euclidean":
-        raw = euclidean_distances([vec1], [vec2])[0][0]
-        raw_min, raw_max = 0.0, 2.0  # Approximate max dist in unit-normalized 384D space
+        raw = euclidean_distances([vec1], [vec2])[0][0] # extracts raw number
+        raw_min, raw_max = 0.0, 2.0  # theoretical upper bound under normalization
     elif method == "Manhattan":
-        raw = manhattan_distances([vec1], [vec2])[0][0]
-        raw_min, raw_max = 0.0, 100.0  # Rough empirical estimate
+        raw = manhattan_distances([vec1], [vec2])[0][0] # extracts raw number
+        raw_min, raw_max = 0.0, 100.0  # rough empirical estimate
     else:
         raise ValueError("Unknown similarity method.")
 
@@ -36,7 +36,7 @@ def compute_similarity(vec1, vec2, method="Cosine"):
         norm_score = (raw - raw_min) / (raw_max - raw_min)
     else:
         norm_score = 1 - (raw - raw_min) / (raw_max - raw_min)
-        norm_score = max(0.0, min(1.0, norm_score))  # Clamp
+        #norm_score = max(0.0, min(1.0, norm_score))  # clams to [0,1]
 
     return norm_score, raw
 
