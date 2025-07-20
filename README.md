@@ -8,3 +8,13 @@ To run the Automated Grading Prototype, ensure you have all required Python pack
 
 # Approach
 In our approach, we use sentence embeddings to convert both the ideal answer and the candidate's response into fixed-length numerical vectors using a pre-trained transformer model. These embeddings capture the semantic meaning of the sentences beyond just surface-level word matching. Once we have these vector representations, we compute similarity scores between them using metrics such as cosine similarity, Euclidean distance, or Manhattan distance. Cosine similarity measures the angle between the two vectors, highlighting directional similarity, while the distance-based metrics quantify how far apart the vectors are in space. These similarity scores are then scaled and converted into a 0–5 grading score, offering an interpretable and automated way to evaluate the semantic closeness between a candidate's response and the expected answer.
+
+# Transformer models
+This project leverages transformer-based sentence embedding models to evaluate the semantic similarity between a candidate response and an ideal medical answer. It supports general-purpose models such as all-MiniLM-L6-v2, all-MiniLM-L12-v2, and paraphrase-MiniLM-L6-v2, all of which are lightweight yet powerful variants of Sentence-BERT fine-tuned for tasks like paraphrase detection and semantic textual similarity. Additionally, it includes two domain-specific models— BioBERT (pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb) and PubMedBERT (pritamdeka/S-PubMedBERT-MS-MARCO)—which are pre-trained and fine-tuned on biomedical and clinical corpora, making them well-suited for medical language understanding. All models generate fixed-length sentence embeddings using mean pooling, and similarity scores between candidate and reference answers are calculated using cosine similarity, Euclidean distance, or Manhattan distance for robust evaluation.
+
+## Citations:
+BioBERT: https://huggingface.co/pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+PubMedBERT: https://huggingface.co/pritamdeka/S-PubMedBert-MS-MARCO
+MiniLM-L6: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+MiniLM-L12: https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2
+paraphrase-MiniLM-L6: https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2
