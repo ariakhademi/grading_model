@@ -14,7 +14,9 @@ This project leverages transformer-based sentence embedding models to evaluate t
 
 ## Citations:
 BioBERT: https://huggingface.co/pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+
 PubMedBERT: https://huggingface.co/pritamdeka/S-PubMedBert-MS-MARCO
+
 MiniLM-L6: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
 MiniLM-L12: https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2
 paraphrase-MiniLM-L6: https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2
