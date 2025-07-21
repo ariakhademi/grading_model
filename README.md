@@ -14,7 +14,9 @@ This project leverages transformer-based sentence embedding models to evaluate t
 
 ## Example output
 Question: What criteria are used to diagnose hypertension?
+
 Ideal answer: Hypertension is diagnosed when blood pressure readings are consistently above 130/80 mmHg on at least two separate occasions.
+
 Candidate response: High blood pressure is diagnosed if it stays above 130 over 80 multiple times.
 
 Model output:
