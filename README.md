@@ -30,12 +30,13 @@ Model output:
 grading_model/ 
 .
 ├── README.md
-├── flowchart.dot # file to generate the flowchart
-├── flowchart.png 
-├── prototype_app.py # python code of the prototype
-├── prototype_runner.sh # runner file
-├── requirements.txt # package requirements
-├── sample_QA.txt # example questions, ideal answers, and candidate answers
+├── example_output.png
+├── flowchart.dot
+├── flowchart.png
+├── prototype_app.py
+├── prototype_runner.sh
+├── requirements.txt
+├── sample_QA.txt
 └── structure.txt
 
 </code></pre>

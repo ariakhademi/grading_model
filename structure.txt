@@ -1,5 +1,6 @@
 .
 ├── README.md
+├── example_output.png
 ├── flowchart.dot
 ├── flowchart.png
 ├── prototype_app.py
@@ -8,4 +9,4 @@
 ├── sample_QA.txt
 └── structure.txt
 
-1 directory, 8 files
+1 directory, 9 files
