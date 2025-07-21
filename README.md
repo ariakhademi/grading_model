@@ -13,7 +13,12 @@ In our approach, we use sentence embeddings to convert both the ideal answer and
 This project leverages transformer-based sentence embedding models to evaluate the semantic similarity between a candidate response and an ideal medical answer. It supports general-purpose models such as all-MiniLM-L6-v2, all-MiniLM-L12-v2, and paraphrase-MiniLM-L6-v2, all of which are lightweight yet powerful variants of Sentence-BERT fine-tuned for tasks like paraphrase detection and semantic textual similarity. Additionally, it includes two domain-specific models— BioBERT (pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb) and PubMedBERT (pritamdeka/S-PubMedBERT-MS-MARCO)—which are pre-trained and fine-tuned on biomedical and clinical corpora, making them well-suited for medical language understanding. All models generate fixed-length sentence embeddings using mean pooling, and similarity scores between candidate and reference answers are calculated using cosine similarity, Euclidean distance, or Manhattan distance for robust evaluation.
 
 ## Example output
-Example output goes here.
+Question: What criteria are used to diagnose hypertension?
+Ideal answer: Hypertension is diagnosed when blood pressure readings are consistently above 130/80 mmHg on at least two separate occasions.
+Candidate response: High blood pressure is diagnosed if it stays above 130 over 80 multiple times.
+
+Model output:
+![Example output](example_output.png)
 
 ## Flowchart of the prototype
 ![Prototype Flowchart](flowchart.png)
