@@ -7,7 +7,7 @@ Objective: Please share and explain your approach to reach the goal.
 To run the Automated Grading Prototype, download the code from the GitHub repo, ensure you have all required Python packages installed (e.g., streamlit, sentence-transformers, scikit-learn, etc.), and then simply execute the included Bash script. To do this, open a terminal, navigate to the project directory, and run ./prototype_runner.sh. This script launches the prototype_app.py Streamlit application, which provides a web interface for grading short free-text answers using sentence embeddings and similarity metrics. Make sure the script has execute permissions (chmod +x prototype_runner.sh) before running it. Once you run the application, there may be a few seconds of delay until the application is completely rendered. In this, you will see on the top right corner, a sign, that reads ``RUNNING''. Please wait until the application fully rendered. Below is a screenshot of the Web interface.
 
 <video width="640" controls>
-  <source src="prototype_application.mov" type="video/mp4">
+  <source src="prototype_application.mov" type="video/quicktime">
   Your browser does not support the video tag.
 </video>
 
