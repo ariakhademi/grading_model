@@ -1,0 +1,11 @@
+.
+├── README.md
+├── flowchart.dot
+├── flowchart.png
+├── prototype_app.py
+├── prototype_runner.sh
+├── requirements.txt
+├── sample_QA.txt
+└── structure.txt
+
+1 directory, 8 files

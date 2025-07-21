@@ -18,10 +18,15 @@ This project leverages transformer-based sentence embedding models to evaluate t
 ## File structure
 <pre><code>
 text grading_model/ 
-├── README.md # Project overview and usage instructions 
-├── prototype_app.py # Streamlit app for grading prototype 
-├── prototype_runner.sh # Shell script to run the prototype 
-├── sample_QA.txt # Sample question-answer pairs for testing 
+.
+├── README.md
+├── flowchart.dot
+├── flowchart.png
+├── prototype_app.py
+├── prototype_runner.sh
+├── requirements.txt
+├── sample_QA.txt
+└── structure.txt
 
 </code></pre>
 
