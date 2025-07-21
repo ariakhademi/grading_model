@@ -16,14 +16,18 @@ This project leverages transformer-based sentence embedding models to evaluate t
 <pre><code>
 text grading_model/ 
 ├── README.md # Project overview and usage instructions 
-├── prototype_app.py # Streamlit or CLI app for grading prototype 
+├── prototype_app.py # Streamlit app for grading prototype 
 ├── prototype_runner.sh # Shell script to run the prototype 
 ├── sample_QA.txt # Sample question-answer pairs for testing 
 
 </code></pre>
 
-## List of demo functions
-fucntions and capabilites of a prototype go here.
+## List of demo functionalities
+- Compares a candidate answer with a given ideal answer
+- Provides a normalized score, in [0,1], for measuring similarity of the answers
+- Outputs words in candidate answers that are missing, according to comparison with the ideal answer 
+- Gives feedback through a visualized bar
+- Categorizes quality of candidate answers into three groups of excellent, fair, and poor.
 
 ## Limitations and future work
 Not clinically fine-tuned.
