@@ -42,7 +42,7 @@ The current embedding models utilized in this prototype have not been clinically
 
 ## Citations:
 
-### Models
+### Embedding transformer models
 BioBERT: https://huggingface.co/pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb<br>
 PubMedBERT: https://huggingface.co/pritamdeka/S-PubMedBert-MS-MARCO<br>
 MiniLM-L6: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2<br>

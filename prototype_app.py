@@ -37,7 +37,7 @@ def compute_similarity(vec1, vec2, method="Cosine"):
         norm_score = (raw - raw_min) / (raw_max - raw_min)
     else:
         norm_score = 1 - (raw - raw_min) / (raw_max - raw_min)
-        #norm_score = max(0.0, min(1.0, norm_score))  # clams to [0,1]
+        norm_score = max(0.0, min(1.0, norm_score))  # clamps to [0,1]
 
     return norm_score, raw
 
