@@ -160,7 +160,6 @@ if st.button("Grade Answer") and ideal and candidate:
     st.markdown("---")
     st.markdown(f"**Similarity Method:** {similarity_method}")
     st.markdown(f'**Transformer Embedding Method:** {model_name}')
-    # st.markdown(f"**Raw Similarity Score:** {round(raw_score, 4)}")
     st.markdown(f"**Normalized Score (pre-penalty):** {round(normalized_score, 4)}")
     st.markdown(f"**Missing Keywords ({num_missing}/{total_keywords}):** {', '.join(missing_keywords) if missing_keywords else 'None'}")
     st.markdown(f"**Final Normalized Score (after penalty):** {round(final_normalized_score, 4)}")
