@@ -30,8 +30,7 @@ text grading_model/
 - Categorizes quality of candidate answers into three groups of excellent, fair, and poor.
 
 ## Limitations and future work
-Not clinically fine-tuned.
-Incorporate human scoring as feedback loop.
+The current embedding models utilized in this prototype have not been clinically validated against state-of-the-art medical datasets, and therefore should not be considered as substitutes for expert judgment or regulatory-grade tools. Future work will focus on rigorous clinical validation of the models using curated, domain-specific benchmarks. Additionally, incorporating expert-labeled data and establishing a human-in-the-loop scoring feedback mechanism with domain professionals will be essential to improve reliability, interpretability, and alignment with real-world clinical standards.
 
 ## Citations:
 
