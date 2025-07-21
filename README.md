@@ -4,7 +4,7 @@ Scenario: You are working for a medical certification board exploring the use of
 Objective: Please share and explain your approach to reach the goal.
 
 ## How to run
-To run the Automated Grading Prototype, ensure you have all required Python packages installed (e.g., streamlit, sentence-transformers, scikit-learn, etc.), and then simply execute the included Bash script. To do this, open a terminal, navigate to the project directory, and run ./prototype_runner.sh. This script launches the prototype_app.py Streamlit application, which provides a web interface for grading short free-text answers using sentence embeddings and similarity metrics. Make sure the script has execute permissions (chmod +x run_grader.sh) before running it.
+To run the Automated Grading Prototype, download the code from the GitHub repo, ensure you have all required Python packages installed (e.g., streamlit, sentence-transformers, scikit-learn, etc.), and then simply execute the included Bash script. To do this, open a terminal, navigate to the project directory, and run ./prototype_runner.sh. This script launches the prototype_app.py Streamlit application, which provides a web interface for grading short free-text answers using sentence embeddings and similarity metrics. Make sure the script has execute permissions (chmod +x run_grader.sh) before running it.
 
 ## Approach
 In our approach, we use sentence embeddings to convert both the ideal answer and the candidate's response into fixed-length numerical vectors using a pre-trained transformer model. These embeddings capture the semantic meaning of the sentences beyond just surface-level word matching. Once we have these vector representations, we compute similarity scores between them using metrics such as cosine similarity, Euclidean distance, or Manhattan distance. Cosine similarity measures the angle between the two vectors, highlighting directional similarity, while the distance-based metrics quantify how far apart the vectors are in space. These similarity scores are then scaled and converted into a 0–5 grading score, offering an interpretable and automated way to evaluate the semantic closeness between a candidate's response and the expected answer.
@@ -17,15 +17,15 @@ This project leverages transformer-based sentence embedding models to evaluate t
 
 ## File structure
 <pre><code>
-text grading_model/ 
+grading_model/ 
 .
 ├── README.md
-├── flowchart.dot
-├── flowchart.png
-├── prototype_app.py
-├── prototype_runner.sh
-├── requirements.txt
-├── sample_QA.txt
+├── flowchart.dot # file to generate the flowchart
+├── flowchart.png 
+├── prototype_app.py # python code of the prototype
+├── prototype_runner.sh # runner file
+├── requirements.txt # package requirements
+├── sample_QA.txt # example questions, ideal answers, and candidate answers
 └── structure.txt
 
 </code></pre>
