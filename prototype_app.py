@@ -53,6 +53,7 @@ def get_missing_keywords(ideal, candidate):
 # (via embedding similarity) with key concept coverage, 
 # which is often important in medical certification contexts.
 def calculate_score(similarity_score, num_missing_keywords, total_keywords):
+    # divide by max, to prevent division by zero
     keyword_penalty = (num_missing_keywords / max(total_keywords, 1)) * 0.4  # 40% penalty
     penalized_score = max(similarity_score - keyword_penalty, 0.0)
 
